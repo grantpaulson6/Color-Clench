@@ -10,12 +10,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const ctx = canvasEl.getContext('2d');
 
 
-    let nextTrackTile3 = new TrackTile({ pos: [400, 200], nextTrackTiles: [] });
-    let nextTrackTile2 = new TrackTile({ pos: [200, 200], nextTrackTiles: [] });
+    let nextTrackTile5 = new TrackTile({ pos: [500, 100], nextTrackTiles: [], color: 'blue' });
+    let nextTrackTile4 = new TrackTile({ pos: [400, 100], nextTrackTiles: [nextTrackTile5] });
+    let nextTrackTile3 = new TrackTile({ pos: [400, 200], nextTrackTiles: [nextTrackTile4] });
+    let nextTrackTile2 = new TrackTile({ pos: [200, 200], nextTrackTiles: [], color: 'green' });
     let nextTrackTile1 = new TrackTile({ pos: [300, 200], nextTrackTiles: [nextTrackTile2, nextTrackTile3] });
     let startTrackTile = new TrackTile({ pos: [300, 300], nextTrackTiles: [nextTrackTile1] });
-    let train = new Train({ startTrackTile, color: 'red' });
+    let train = new Train({ startTrackTile, color: 'blue' });
 
+    const objects = [nextTrackTile1, nextTrackTile2, nextTrackTile3, nextTrackTile4, nextTrackTile5, startTrackTile, train];
 
     canvasEl.addEventListener('click', e => {
         const x = event.pageX - canvasEl.offsetLeft;
@@ -26,10 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    nextTrackTile1.draw(ctx);
     const animate = () => {
-        train.draw(ctx);
-        train.move();
+        ctx.clearRect(0,0,600,600);
+        objects.forEach( object => {
+            object.draw(ctx);
+        });
         requestAnimationFrame(animate);
     };
 
