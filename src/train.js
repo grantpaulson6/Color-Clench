@@ -6,16 +6,18 @@ class Train {
         this.color = color;
         this.pos = [startTrackTile.pos[0], startTrackTile.pos[1]];
         this.renderCount = 0;
-        this.renderInterval = 50;
+        this.renderInterval = 120;
     }
 
 
     draw(ctx) {
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.pos[0], this.pos[1], 20, 0, 2 * Math.PI, true);
-        ctx.fill();
-        this.move();
+        if (!this.finished) {
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.pos[0], this.pos[1], 20, 0, 2 * Math.PI, true);
+            ctx.fill();
+            this.move();
+        }
     }
 
     move() {
@@ -25,10 +27,16 @@ class Train {
         this.pos[1] += deltaY;
         this.renderCount += 1;
         if (this.renderCount === this.renderInterval) {
-            this.renderCount = 0;
-            this.startTrackTile = this.endTrackTile;
-            this.endTrackTile = this.endTrackTile.nextTrackTile;
-            console.log(this.endTrackTile.pos);
+            if (this.endTrackTile.color) {
+                this.finished = true;
+                if (this.color === this.endTrackTile.color) {
+                    alert('you reached the correct station');
+                }
+            } else {
+                this.renderCount = 0;
+                this.startTrackTile = this.endTrackTile;
+                this.endTrackTile = this.endTrackTile.nextTrackTile;
+            }
         }
     }
 }
