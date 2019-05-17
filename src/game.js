@@ -13,14 +13,12 @@ class Game {
         this.requiredStations = difficulty;
         this.trackNodes = {};
 
-        //use station count for train colors
         this.trains = [];
         this.intersections = [];
         this.buildTrack();
         this.addTrain();
         this.ctx = this.setupCanvas(canvasEl);
         window.requestAnimationFrame(() => this.animate(this.ctx));
-        // this.animate(this.ctx);
     }
 
 
@@ -32,8 +30,7 @@ class Game {
 
             // this.toggleIntersection(this.rootNode, x, y);
             this.intersections.forEach(intersection => {
-                if (Math.abs(x - intersection.pos[0]) < 10 && Math.abs(y - intersection.pos[1] < 10)) {
-                    console.log('it worked');
+                if ( Math.sqrt((x - intersection.pos[0])**2 + (y - intersection.pos[1])**2) <= 20) {
                     intersection.toggleNextTrack();
                 }
             });
@@ -43,20 +40,6 @@ class Game {
         canvasEl.height = 700;
         return canvasEl.getContext('2d');
     }
-
-    // toggleIntersection(node,x,y) {
-    //     if (Math.abs(x - node.pos[0]) < 10 && Math.abs(y - node.pos[1] < 10)) {
-    //         console.log('it worked');
-    //         node.toggleNextTrack();
-    //     }
-
-    //     this.intersections.forEach( intersection => {
-
-    //     })
-    //     node.nextTrackTiles.forEach( trackTile => {
-    //         this.toggleIntersection(trackTile, x, y);
-    //     });
-    // }
 
     animate(ctx) {
         ctx.clearRect(0, 0, 900, 700);
@@ -181,13 +164,25 @@ class Game {
     }
 
     addTrain() {
-        if (this.trainCount < 20) {
+        if (this.trainCount < 10) {
             this.trainCount += 1;
             window.setTimeout(() => {
                 this.trains.push(new Train({ startTrackTile: this.rootNode, color: this.colors[Math.floor(Math.random() * this.difficulty)] }));
                 this.addTrain();
             }, 2000 + Math.random() * 4000);
+        } else {
+            alert('you scored ', this.score(),' out of 20');
         }
+    }
+
+    score() {
+        let score = 0;
+        this.trains.forEach( train => {
+            if (train.scored) {
+                score += 1;
+            }
+        });
+        return score;
     }
 }
 

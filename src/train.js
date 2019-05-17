@@ -7,6 +7,7 @@ class Train {
         this.pos = [startTrackTile.pos[0], startTrackTile.pos[1]];
         this.renderCount = 0;
         this.renderInterval = 120;
+        this.scored = false;
     }
 
 
@@ -30,7 +31,7 @@ class Train {
             if (this.endTrackTile.color) {
                 this.finished = true;
                 if (this.color === this.endTrackTile.color) {
-                    alert('you reached the correct station');
+                    this.scored = true;
                 }
             } else {
                 this.renderCount = 0;

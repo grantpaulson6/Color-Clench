@@ -22,7 +22,7 @@ class TrackTile {
         }
     }
 
-    draw(ctx) {
+    draw(ctx, parentPos) {
         if (this.color) {
             ctx.fillStyle = this.color;
             ctx.beginPath();
@@ -41,14 +41,24 @@ class TrackTile {
                 ctx.fillStyle = "white";
                 ctx.fill();
                 ctx.moveTo(this.pos[0], this.pos[1]);
-                ctx.lineTo(this.nextTrackTile.pos[0], this.nextTrackTile.pos[1]);
+                let nextPosDelta = this.connect(this.pos, this.nextTrackTile.pos);
+                ctx.lineTo(this.pos[0] + nextPosDelta[0], this.pos[1] + nextPosDelta[1]);
+                
+                ctx.moveTo(this.pos[0], this.pos[1]);
+                let nextPosDelta2 = this.connect(this.pos, parentPos);
+                ctx.lineTo(this.pos[0] + nextPosDelta2[0], this.pos[1] + nextPosDelta2[1]);
                 ctx.stroke();
             }
         }
 
         this.nextTrackTiles.forEach( tile => {
-            tile.draw(ctx);
+            tile.draw(ctx, this.pos);
         });
+    }
+
+    connect(pos1, pos2) {
+        return [(pos2[0] - pos1[0]) * 20 / (Math.abs((pos2[0] - pos1[0])) ? Math.abs((pos2[0] - pos1[0])) : 1),
+            (pos2[1] - pos1[1]) * 20 / (Math.abs((pos2[1] - pos1[1])) ? Math.abs((pos2[1] - pos1[1])) : 1)];
     }
 }
 
