@@ -2,23 +2,25 @@ const Train = require('./train');
 const TrackTile = require('./track_tile');
 
 class Game {
-    constructor({ difficulty, canvasEl }) {
+    constructor({difficulty, canvasEl}) {
         this.difficulty = difficulty;
         this.colors = ['slateblue', 'khaki', 'crimson', 'olive', 'coral', 'lightpink', 'orchid', 'lime', 'darkcyan', 'aqua'];
         this.score = 0;
-        
+
         this.trainCount = 0;
         this.branchCount = 0;
         this.stationCount = 0;
         this.requiredStations = difficulty;
         this.trackNodes = {};
-        
-        
-        this.objects = this.buildTrack();
-        // this.addTrain();
+
+        //use station count for train colors
+        this.trains = [];
+        this.intersections = [];
+        this.buildTrack();
+        this.addTrain();
         this.ctx = this.setupCanvas(canvasEl);
-        // window.requestAnimationFrame(() => this.animate(this.ctx));
-        this.animate(this.ctx);
+        window.requestAnimationFrame(() => this.animate(this.ctx));
+        // this.animate(this.ctx);
     }
 
 
@@ -28,10 +30,13 @@ class Game {
             const x = event.pageX - canvasEl.offsetLeft;
             const y = event.pageY - canvasEl.offsetTop;
 
-
-            if (Math.abs(x - this.objects[1].pos[0]) < 10 && Math.abs(y - this.objects[1].pos[1])) {
-                this.objects[1].toggleNextTrack();
-            }
+            // this.toggleIntersection(this.rootNode, x, y);
+            this.intersections.forEach(intersection => {
+                if (Math.abs(x - intersection.pos[0]) < 10 && Math.abs(y - intersection.pos[1] < 10)) {
+                    console.log('it worked');
+                    intersection.toggleNextTrack();
+                }
+            });
         });
 
         canvasEl.width = 900;
@@ -39,98 +44,139 @@ class Game {
         return canvasEl.getContext('2d');
     }
 
+    // toggleIntersection(node,x,y) {
+    //     if (Math.abs(x - node.pos[0]) < 10 && Math.abs(y - node.pos[1] < 10)) {
+    //         console.log('it worked');
+    //         node.toggleNextTrack();
+    //     }
+
+    //     this.intersections.forEach( intersection => {
+
+    //     })
+    //     node.nextTrackTiles.forEach( trackTile => {
+    //         this.toggleIntersection(trackTile, x, y);
+    //     });
+    // }
+
     animate(ctx) {
-        console.log('stations: ', this.stationCount, '  branches:', this.branchCount);
-        console.log(this.objects);
         ctx.clearRect(0, 0, 900, 700);
         // this.objects.forEach(object => {
         //     object.draw(ctx);
         // });
-        this.objects.draw(ctx);
+        this.rootNode.draw(ctx);
+        this.trains.forEach(train => {
+            train.draw(ctx);
+        });
         requestAnimationFrame(() => this.animate(ctx));
     }
 
-    buildTrack(prevPos) {
-        console.log(prevPos)
-        // console.log(this.trackNodes);
-        console.log('stations: ',this.stationCount,'  branches:', this.branchCount);
-        // let nextTrackTile5 = new TrackTile({ pos: [500, 100], nextTrackTiles: [], color: 'blue' });
-        // let nextTrackTile4 = new TrackTile({ pos: [400, 100], nextTrackTiles: [nextTrackTile5] });
-        // let nextTrackTile3 = new TrackTile({ pos: [400, 200], nextTrackTiles: [nextTrackTile4] });
-        // let nextTrackTile2 = new TrackTile({ pos: [200, 200], nextTrackTiles: [], color: 'green' });
-        // let nextTrackTile1 = new TrackTile({ pos: [300, 200], nextTrackTiles: [nextTrackTile2, nextTrackTile3] });
-        // let startTrackTile = new TrackTile({ pos: [300, 300], nextTrackTiles: [nextTrackTile1] });
-        // let train = new Train({ startTrackTile, color: 'blue' });
-        // this.objects = [startTrackTile, nextTrackTile1, nextTrackTile2, nextTrackTile3, nextTrackTile4, nextTrackTile5, train];
-
-
+    buildTrack() {
 
         //if root node: start branch count, randomly select initial location, and ensure only one child
-        if (this.branchCount === 0) {
-            this.branchCount += 1;
-            const pos = [Math.floor(Math.random() * 9) * 100 + 50, Math.floor(Math.random() * 7) * 100 + 50];
-            this.trackNodes[pos] = true;
-            return new TrackTile({ pos: pos, nextTrackTiles: [this.buildTrack(pos)] });
+        this.branchCount += 1;
+        const pos = [Math.floor(Math.random() * 9) * 100 + 50, Math.floor(Math.random() * 7) * 100 + 50];
+        this.rootNode = new TrackTile({ pos: pos, nextTrackTiles: [] });
+        this.trackNodes[pos] = this.rootNode;
+
+
+        let validNodes = this.allValidNodes(pos);
+        let nextNodePos = this.randomValidNode(validNodes);
+        let nextChildNode = new TrackTile({ pos: nextNodePos, nextTrackTiles: []});
+        this.trackNodes[nextNodePos] = nextNodePos;
+        this.rootNode.addNextTile(nextChildNode);
+
+        const nodeQueue = [nextChildNode];
+        let nextNode;
+        let nextNode2;
+        let nextNodePos2;
+        let currentNode;
+        let nodeChildrenProbabilty;
+        let i = 0;
+
+        while (nodeQueue.length > 0) {
+
+            currentNode = nodeQueue[0];
+            nodeChildrenProbabilty = Math.floor(Math.random() * 3);
+            validNodes = this.allValidNodes(currentNode.pos);
+            nextNodePos = this.randomValidNode(validNodes);
+
+            // make a station, end that branch
+            if (nodeChildrenProbabilty === 2 && (this.branchCount - this.stationCount > 1) && validNodes.length > 0 && i > 3) {
+                this.stationCount += 1;
+                this.trackNodes[nextNodePos] = true;
+                nextNode = new TrackTile({ pos: nextNodePos, nextTrackTiles: [], color: this.colors[this.stationCount - 1] });
+                currentNode.addNextTile(nextNode);
+            } 
+            // split and add a branch, adding two to queue
+            else if (this.branchCount < this.requiredStations && (nodeChildrenProbabilty === 2 || nodeChildrenProbabilty === 1) && validNodes.length > 1 && i > 3) {
+                this.branchCount += 1;
+                nextNode = new TrackTile({ pos: nextNodePos, nextTrackTiles: [] });
+                this.trackNodes[nextNodePos] = true;
+
+                nextNodePos2 = this.randomValidNode(this.allValidNodes(currentNode.pos));
+                this.trackNodes[nextNodePos2] = true;
+                nextNode2 = new TrackTile({ pos: nextNodePos2, nextTrackTiles: [] });
+
+                currentNode.addNextTile(nextNode);
+                currentNode.addNextTile(nextNode2);
+                this.intersections.push(currentNode);
+                nodeQueue.push(nextNode);
+                nodeQueue.push(nextNode2);
+            }
+
+            else {
+                // if more than 1 remaing station, just add one child, aka just plain track, add one to queue
+                if (validNodes.length > 0 && this.requiredStations - this.stationCount > 1) {
+                    nextNode = new TrackTile({ pos: nextNodePos, nextTrackTiles: [] });
+                    this.trackNodes[nextNodePos] = true;
+                    currentNode.addNextTile(nextNode);
+                    nodeQueue.push(nextNode);
+                    i++;
+                // if one remaing station, 1 in 2 shot of turning into station, else continue with one child
+                } else if (this.stationCount < this.requiredStations) {
+                    if (validNodes.length > 0 && Math.floor(Math.random() * 2) === 0) {
+                        nextNode = new TrackTile({ pos: nextNodePos, nextTrackTiles: [] });
+                        this.trackNodes[nextNodePos] = true;
+                        currentNode.addNextTile(nextNode);
+                        nodeQueue.push(nextNode);
+                    } else {
+                        this.stationCount += 1;
+                        currentNode.color = this.colors[this.stationCount - 1];
+                    }
+                }
+            }
+            nodeQueue.shift();
         }
-        const nodeChildrenProbabilty = Math.floor(Math.random() * 3);
-        const validTracks = this.allValidTracks(prevPos);
-        const oneTrack = this.randomValidTrack(validTracks);
-        
-        // if (validTracks.length === 0) {
-        //     return new TrackTile({})
-        // } else 
 
-        //logic for if branch count = requiredStations
-        if (this.requiredStations === this.branchCount) {
-            this.stationCount += 1;
-            this.trackNodes[oneTrack] = true;
-            return new TrackTile({ pos: oneTrack, nextTrackTiles: [], color: this.colors[this.stationCount - 1] });
-        } 
-        // 25% chance of becoming station, as long as it isn't the last open branch with more stations needed
-        if (nodeChildrenProbabilty === 2 && (this.branchCount - this.stationCount > 1) && validTracks.length > 0) {
-            this.stationCount += 1;
-            this.trackNodes[oneTrack] = true;
-            return new TrackTile({pos: oneTrack, nextTrackTiles: [], color: this.colors[this.stationCount-1]});
-        // 25% of branching
-        } else if ((nodeChildrenProbabilty == 1 || nodeChildrenProbabilty == 2) && validTracks.length > 1 && (this.branchCount < this.requiredStations)) {
-            this.branchCount += 1;
-
-            this.trackNodes[oneTrack] = true;
-
-            new TrackTile({ pos: oneTrack, nextTrackTiles: [this.buildTrack(oneTrack)] });
-
-            const pos2 = this.randomValidTrack(this.allValidTracks(prevPos));
-            this.trackNodes[pos2] = true;
-            new TrackTile({ pos: pos2, nextTrackTiles: [this.buildTrack(pos2)] });
-
-
-        }  else if (validTracks.length > 0) {
-            //handle no valid nodes
-            this.trackNodes[oneTrack] = true;
-            return new TrackTile({ oneTrack, nextTrackTiles: [this.buildTrack(oneTrack)] });
+        // if track isn't of desired number of stations, retry
+        if (this.stationCount != this.requiredStations) {
+            this.trainCount = 0;
+            this.branchCount = 0;
+            this.stationCount = 0;
+            this.trackNodes = {};
+            this.buildTrack();
         }
-        console.log('shouldnt');
     }
 
-    randomValidTrack(validTracks) {
-        if (validTracks.length > 0) {
-            let randIdx = Math.floor(Math.random() * validTracks.length);
-            return validTracks[randIdx];
+    randomValidNode(validNodes) {
+        if (validNodes.length > 0) {
+            let randIdx = Math.floor(Math.random() * validNodes.length);
+            return validNodes[randIdx];
         }
-        return validTracks;
+        return validNodes;
     }
 
-    allValidTracks(pos) {
-        let validTracks = [];
+    allValidNodes(pos) {
+        let validNodes = [];
         [[pos[0] + 100, pos[1]], [pos[0] - 100, pos[1]], [pos[0], pos[1] + 100], [pos[0], pos[1] - 100]].forEach(pos => {
-            if (this.validTrack(pos)) {
-                validTracks.push(pos);
+            if (this.validNode(pos)) {
+                validNodes.push(pos);
             }
         });
-        return validTracks;
+        return validNodes;
     }
 
-    validTrack(pos) {
+    validNode(pos) {
         return (!this.trackNodes[pos] && pos[0] > 0 && pos[0] < 900 && pos[1] > 0 && pos[1] < 700);
     }
 
@@ -138,9 +184,9 @@ class Game {
         if (this.trainCount < 20) {
             this.trainCount += 1;
             window.setTimeout(() => {
-                this.objects.push(new Train({ startTrackTile: this.objects[0], color: this.colors[Math.floor(Math.random() * this.difficulty)] }));
+                this.trains.push(new Train({ startTrackTile: this.rootNode, color: this.colors[Math.floor(Math.random() * this.difficulty)] }));
                 this.addTrain();
-            }, 1000 + Math.random() * 2000);
+            }, 2000 + Math.random() * 4000);
         }
     }
 }
