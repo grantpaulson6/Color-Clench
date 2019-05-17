@@ -1,7 +1,6 @@
-import Game from './game';
+import Game from './game2';
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvasEl = document.getElementById('game-canvas');
-    new Game({canvasEl, difficulty: 4});
-
+    new Game({ canvasEl, difficulty: 3});
 });

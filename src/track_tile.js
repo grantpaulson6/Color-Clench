@@ -14,6 +14,14 @@ class TrackTile {
         this.nextTrackTile = this.nextTrackTiles[this.nextTrackTileIndex];
     }
 
+    addNextTile(trackTile) {
+        this.nextTrackTiles.push(trackTile);
+        this.nextTrackTile = this.nextTrackTiles[0];
+        if (this.nextTrackTiles.length > 1) {
+            this.toggleable = true;
+        }
+    }
+
     draw(ctx) {
         if (this.color) {
             ctx.fillStyle = this.color;
@@ -38,6 +46,9 @@ class TrackTile {
             }
         }
 
+        this.nextTrackTiles.forEach( tile => {
+            tile.draw(ctx);
+        });
     }
 }
 
