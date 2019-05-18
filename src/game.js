@@ -1,27 +1,37 @@
-const Train = require('./train');
-const TrackTile = require('./track_tile');
+import Train from './train';
+import TrackTile from './track_tile';
 
 class Game {
-    constructor({difficulty, canvasEl}) {
-        this.difficulty = difficulty;
+    constructor({canvasEl}) {
+        this.width = 800;
+        this.height = 600;
         this.colors = ['slateblue', 'khaki', 'crimson', 'olive', 'coral', 'lightpink', 'orchid', 'lime', 'darkcyan', 'aqua'];
-        this.score = 0;
-
+        this.intersections = [];
+        this.ctx = this.setupCanvas(canvasEl);
+    }
+    
+    start({size, speed}) {
         this.trainCount = 0;
         this.branchCount = 0;
         this.stationCount = 0;
-        this.requiredStations = difficulty;
+        this.requiredStations = size;
+        this.speed = speed;
         this.trackNodes = {};
-
-        this.trains = [];
         this.intersections = [];
+        this.trains = [];
         this.buildTrack();
-        this.addTrain();
-        this.ctx = this.setupCanvas(canvasEl);
-        window.requestAnimationFrame(() => this.animate(this.ctx));
+        this.trainRef = this.addTrain();
+        this.animateRef = window.requestAnimationFrame(() => this.animate(this.ctx));
     }
 
-
+    stop() {
+        if (this.animateRef) {
+            window.cancelAnimationFrame(this.animateRef);
+        }
+        if (this.trainRef) {
+            window.clearTimeout(this.trainRef);
+        }
+    }
 
     setupCanvas(canvasEl) {
         canvasEl.addEventListener('click', e => {
@@ -30,23 +40,25 @@ class Game {
 
             // this.toggleIntersection(this.rootNode, x, y);
             this.intersections.forEach(intersection => {
-                if ( Math.sqrt((x - intersection.pos[0])**2 + (y - intersection.pos[1])**2) <= 20) {
+                if (Math.sqrt((x - intersection.pos[0]) ** 2 + (y - intersection.pos[1]) ** 2) <= 20) {
                     intersection.toggleNextTrack();
                 }
             });
         });
 
-        canvasEl.width = 900;
-        canvasEl.height = 700;
+        canvasEl.width = this.width;
+        canvasEl.height = this.height;
         return canvasEl.getContext('2d');
     }
 
+
     animate(ctx) {
-        ctx.clearRect(0, 0, 900, 700);
+        ctx.clearRect(0, 0, this.width, this.height);
         // this.objects.forEach(object => {
         //     object.draw(ctx);
         // });
-        this.rootNode.draw(ctx);
+
+        this.rootNode.draw(ctx, 'root');
         this.trains.forEach(train => {
             train.draw(ctx);
         });
@@ -57,7 +69,7 @@ class Game {
 
         //if root node: start branch count, randomly select initial location, and ensure only one child
         this.branchCount += 1;
-        const pos = [Math.floor(Math.random() * 9) * 100 + 50, Math.floor(Math.random() * 7) * 100 + 50];
+        const pos = [Math.floor(Math.random() * this.width/100) * 100 + 50, Math.floor(Math.random() * this.height/100) * 100 + 50];
         this.rootNode = new TrackTile({ pos: pos, nextTrackTiles: [] });
         this.trackNodes[pos] = this.rootNode;
 
@@ -160,18 +172,25 @@ class Game {
     }
 
     validNode(pos) {
-        return (!this.trackNodes[pos] && pos[0] > 0 && pos[0] < 900 && pos[1] > 0 && pos[1] < 700);
+        return (!this.trackNodes[pos] && pos[0] > 0 && pos[0] < this.width && pos[1] > 0 && pos[1] < this.height);
     }
 
     addTrain() {
-        if (this.trainCount < 10) {
+        if (this.trainCount < 5) {
             this.trainCount += 1;
-            window.setTimeout(() => {
-                this.trains.push(new Train({ startTrackTile: this.rootNode, color: this.colors[Math.floor(Math.random() * this.difficulty)] }));
+            this.trainRef = window.setTimeout(() => {
+                console.log(this.trainCount, ' train count');
+                this.trains.push(new Train({ startTrackTile: this.rootNode, speed: this.speed, color: this.colors[Math.floor(Math.random() * this.requiredStations)] }));
                 this.addTrain();
             }, 2000 + Math.random() * 4000);
         } else {
-            alert('you scored ', this.score(),' out of 20');
+            if (!this.trains[this.trains.length -1].finished) {
+                this.trainRef = window.setTimeout(() => {
+                    this.addTrain();
+                }, 1000);
+            } else {
+                console.log('game over');
+            }
         }
     }
 
@@ -182,6 +201,7 @@ class Game {
                 score += 1;
             }
         });
+        console.log(score);
         return score;
     }
 }

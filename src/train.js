@@ -1,13 +1,11 @@
-
 class Train {
-    constructor({ startTrackTile, color }) {
+    constructor({ startTrackTile, color, speed }) {
         this.startTrackTile = startTrackTile;
         this.endTrackTile = startTrackTile.nextTrackTile;
         this.color = color;
         this.pos = [startTrackTile.pos[0], startTrackTile.pos[1]];
         this.renderCount = 0;
-        this.renderInterval = 120;
-        this.scored = false;
+        this.renderInterval = speed;
     }
 
 
@@ -27,7 +25,7 @@ class Train {
         this.pos[0] += deltaX;
         this.pos[1] += deltaY;
         this.renderCount += 1;
-        if (this.renderCount === this.renderInterval) {
+        if (this.renderCount >= this.renderInterval) {
             if (this.endTrackTile.color) {
                 this.finished = true;
                 if (this.color === this.endTrackTile.color) {
@@ -42,4 +40,4 @@ class Train {
     }
 }
 
-module.exports = Train;
+export default Train;
