@@ -14,12 +14,13 @@ class Game {
         this.animateRef = window.requestAnimationFrame(() => this.animate(this.ctx));
     }
     
-    start({size, speed}) {
+    start({size, speed, frequency}) {
         this.trainCount = 0;
         this.branchCount = 0;
         this.stationCount = 0;
         this.requiredStations = size;
         this.speed = speed;
+        this.frequency = frequency;
         this.trackNodes = {};
         this.intersections = [];
         this.trains = [];
@@ -184,7 +185,7 @@ class Game {
             this.trainRef = window.setTimeout(() => {
                 this.trains.push(new Train({ startTrackTile: this.rootNode, speed: this.speed, color: this.colors[Math.floor(Math.random() * this.requiredStations)] }));
                 this.addTrain();
-            }, 2000 + Math.random() * 4000);
+            }, this.frequency *1000 / 2 + Math.random() * this.frequency * 1000 );
         } else {
             if (!this.trains[this.trains.length -1].finished) {
                 this.trainRef = window.setTimeout(() => {
