@@ -2,7 +2,8 @@ import Train from './train';
 import TrackTile from './track_tile';
 
 class Game {
-    constructor({canvasEl}) {
+    constructor({canvasEl, numTrains}) {
+        this.numTrains = numTrains;
         this.width = 800;
         this.height = 600;
         this.colors = ['slateblue', 'khaki', 'crimson', 'olive', 'coral', 'lightpink', 'orchid', 'lime', 'darkcyan', 'aqua'];
@@ -178,7 +179,7 @@ class Game {
     }
 
     addTrain() {
-        if (this.trainCount < 20) {
+        if (this.trainCount < this.numTrains) {
             this.trainCount += 1;
             this.trainRef = window.setTimeout(() => {
                 this.trains.push(new Train({ startTrackTile: this.rootNode, speed: this.speed, color: this.colors[Math.floor(Math.random() * this.requiredStations)] }));
@@ -190,7 +191,7 @@ class Game {
                     this.addTrain();
                 }, 1000);
             } else {
-                console.log('game over');
+                console.log(`You scored ${this.score()} of of ${this.numTrains}`);
             }
         }
     }
@@ -202,7 +203,6 @@ class Game {
                 score += 1;
             }
         });
-        console.log(score);
         return score;
     }
 }

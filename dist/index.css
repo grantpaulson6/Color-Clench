@@ -8,8 +8,14 @@ body {
 #menu {
     height: 100vh;
     width: 400px;
-    padding: 10px;
+    padding: 20px;
 
+}
+
+#menu h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  font-weight: 600;
 }
 
 
@@ -21,7 +27,11 @@ body {
     align-items: center;
 }
 
-
+#settings h2 {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
 
 
 .slidecontainer {

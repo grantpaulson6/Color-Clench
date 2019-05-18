@@ -6,7 +6,6 @@ class Train {
         this.pos = [startTrackTile.pos[0], startTrackTile.pos[1]];
         this.renderCount = 0;
         this.renderInterval = speed;
-        console.log(this.renderInterval);
     }
 
 
