@@ -8,6 +8,9 @@ class Game {
         this.colors = ['slateblue', 'khaki', 'crimson', 'olive', 'coral', 'lightpink', 'orchid', 'lime', 'darkcyan', 'aqua'];
         this.intersections = [];
         this.ctx = this.setupCanvas(canvasEl);
+        this.trains = [];
+        this.rootNode = {draw: ()=>{}};
+        this.animateRef = window.requestAnimationFrame(() => this.animate(this.ctx));
     }
     
     start({size, speed}) {
@@ -20,8 +23,7 @@ class Game {
         this.intersections = [];
         this.trains = [];
         this.buildTrack();
-        this.trainRef = this.addTrain();
-        this.animateRef = window.requestAnimationFrame(() => this.animate(this.ctx));
+        this.addTrain();
     }
 
     stop() {
@@ -176,10 +178,9 @@ class Game {
     }
 
     addTrain() {
-        if (this.trainCount < 5) {
+        if (this.trainCount < 20) {
             this.trainCount += 1;
             this.trainRef = window.setTimeout(() => {
-                console.log(this.trainCount, ' train count');
                 this.trains.push(new Train({ startTrackTile: this.rootNode, speed: this.speed, color: this.colors[Math.floor(Math.random() * this.requiredStations)] }));
                 this.addTrain();
             }, 2000 + Math.random() * 4000);

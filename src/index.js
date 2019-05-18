@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
         game.stop();
         const size = document.getElementById('difficulty-size').value;
         let speed = document.getElementById('difficulty-speed').value;
-        speed = parseInt(speed) + 2*(135-parseInt(speed)+90);
+        speed = parseInt(speed) + 2*(90-parseInt(speed)+60);
         game.start({size, speed});
 
     });
