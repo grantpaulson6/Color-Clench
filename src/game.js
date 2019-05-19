@@ -222,7 +222,6 @@ class Game {
         const difficulty = this.difficulty();
         return {correct: score, 
             missed: (this.numTrains - score), 
-            difficulty, 
             overall: +((difficulty * score / this.numTrains).toFixed(2))};
     }
 
@@ -237,10 +236,13 @@ class Game {
 
     populateScores() {
         const scores = document.getElementById('score-list');
-        const newScore = document.createElement('LI');
+        const newScore = document.createElement('tr');
         const lastScore = this.scores[this.scores.length - 1];
-        debugger
-        newScore.innerHTML = `Correct: ${lastScore.correct} | Missed: ${lastScore.missed} | Overall Score: ${lastScore.overall}`;
+        Object.values(lastScore).forEach(value => {
+            let entry = document.createElement('td')
+            entry.innerHTML = value;
+            newScore.appendChild(entry);
+        });
         scores.appendChild(newScore);
     }
 }

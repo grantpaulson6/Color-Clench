@@ -86,3 +86,16 @@ body {
   background: #4CAF50; /* Green background */
   cursor: pointer; /* Cursor on hover */
 }
+
+table {
+  width: 100%;
+}
+tr {
+  width: 100%;
+  display: flex;
+  justify-content: space-around
+}
+
+th {
+  font-weight: bold;
+}
