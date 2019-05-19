@@ -2,11 +2,12 @@ import Train from './train';
 import TrackTile from './track_tile';
 
 class Game {
-    constructor({canvasEl, numTrains}) {
-        this.numTrains = numTrains;
+    constructor({canvasEl}) {
+        this.lastTrainColor = null;
         this.width = 800;
         this.height = 600;
         this.colors = ['slateblue', 'khaki', 'crimson', 'olive', 'coral', 'lightpink', 'orchid', 'lime', 'darkcyan', 'aqua'];
+        this.scores = [];
         this.intersections = [];
         this.ctx = this.setupCanvas(canvasEl);
         this.trains = [];
@@ -14,13 +15,14 @@ class Game {
         this.animateRef = window.requestAnimationFrame(() => this.animate(this.ctx));
     }
     
-    start({size, speed, frequency}) {
+    start({size, speed, frequency, quantity}) {
         this.trainCount = 0;
         this.branchCount = 0;
         this.stationCount = 0;
         this.requiredStations = size;
         this.speed = speed;
         this.frequency = frequency;
+        this.numTrains = quantity;
         this.trackNodes = {};
         this.intersections = [];
         this.trains = [];
@@ -183,7 +185,7 @@ class Game {
         if (this.trainCount < this.numTrains) {
             this.trainCount += 1;
             this.trainRef = window.setTimeout(() => {
-                this.trains.push(new Train({ startTrackTile: this.rootNode, speed: this.speed, color: this.colors[Math.floor(Math.random() * this.requiredStations)] }));
+                this.trains.push(new Train({ startTrackTile: this.rootNode, speed: this.speed, color: this.nextTrainColor() }));
                 this.addTrain();
             }, this.frequency *1000 / 2 + Math.random() * this.frequency * 1000 );
         } else {
@@ -192,9 +194,22 @@ class Game {
                     this.addTrain();
                 }, 1000);
             } else {
-                console.log(`You scored ${this.score()} of of ${this.numTrains}`);
+                let score = this.score();
+                console.log(`You got ${score.overall}`);
+                this.scores.push(score);
+                this.populateScores();
             }
         }
+    }
+
+    // no back to back repeating colors
+    nextTrainColor() {
+        let color = this.colors[Math.floor(Math.random() * this.requiredStations)];
+        if (color === this.lastTrainColor) {
+            return this.nextTrainColor();
+        }
+        this.lastTrainColor = color;
+        return color;
     }
 
     score() {
@@ -204,7 +219,29 @@ class Game {
                 score += 1;
             }
         });
-        return score;
+        const difficulty = this.difficulty();
+        return {correct: score, 
+            missed: (this.numTrains - score), 
+            difficulty, 
+            overall: +((difficulty * score / this.numTrains).toFixed(2))};
+    }
+
+    difficulty() {
+        const size = (this.requiredStations - 3 ) * 3 / 7;
+        const speed = (180 - this.speed) * 2.5 / 160;
+        const frequency = (6 -this.frequency) * 2.5 / 5;
+        const quantity = (this.numTrains - 5)* 2 / 45;
+        const difficulty = size + speed + frequency + quantity;
+        return difficulty;
+    }
+
+    populateScores() {
+        const scores = document.getElementById('score-list');
+        const newScore = document.createElement('LI');
+        const lastScore = this.scores[this.scores.length - 1];
+        debugger
+        newScore.innerHTML = `Correct: ${lastScore.correct} | Missed: ${lastScore.missed} | Overall Score: ${lastScore.overall}`;
+        scores.appendChild(newScore);
     }
 }
 

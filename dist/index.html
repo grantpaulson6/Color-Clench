@@ -21,17 +21,25 @@
                 </label>
                 <label>Speed
                     <div class="slidecontainer">
-                        <input type="range" min="20" max="180" value="120" step=20 class="slider" id="difficulty-speed">
+                        <input type="range" min="20" max="180" value="80" step=20 class="slider" id="difficulty-speed">
                     </div>
                 </label>
                 <label>Frequency
                     <div class="slidecontainer">
-                        <input type="range" min="1" max="4" value="3" step=.25 class="slider" id="difficulty-frequency">
+                        <input type="range" min="1" max="6" value="2.5" step=.25 class="slider" id="difficulty-frequency">
+                    </div>
+                </label>
+                <label>Quantity
+                    <div class="slidecontainer">
+                        <input type="range" min="5" max="50" value="25" step=5 class="slider" id="difficulty-quantity">
                     </div>
                 </label>
                 <button id="start">Start Clenching!</button>
             </div>
-            <div id="scores"></div>
+            <div id="scores">
+                <h2>Scores</h1>
+                    <ul id="score-list"></ul>
+            </div>
         </div>
         <div id="game">
             <canvas id="game-canvas"></canvas>
