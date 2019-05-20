@@ -114,12 +114,14 @@ body {
 
   #menu {
     height: 30vh;
+    height: calc(var(--vh, 1vh) * 30);
     width: 100vw;
     bottom: 0;
     left: 0;
     padding: 10px 5%;
     position: fixed;
     display: block;
+    overflow: scroll;
     /* display: flex;
     flex-direction: column;
     flex-wrap: wrap; */
@@ -127,6 +129,7 @@ body {
 
   #game {
     height: 70vh;
+    height: calc(var(--vh, 1vh) * 70);
     width: 100vw;
     display: flex;
     justify-content: center;

@@ -5,6 +5,8 @@ window.addEventListener('load', () => {
     if (innerWidth < 700) {
         canvasEl.width = innerWidth;
         canvasEl.height = innerHeight*0.7;
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty("--vh", `${vh}px`);
     } else {
         canvasEl.width = 900;
         canvasEl.height = 700;
@@ -19,9 +21,25 @@ window.addEventListener('load', () => {
         frequency = Number(frequency) + 2 * (2.5 - Number(frequency) + 1);
         const quantity = document.getElementById('difficulty-quantity').value;
         game.start({size, speed, frequency, quantity});
-
+        
     });
 });
+
+// document.getElementById('menu').addEventListener('mousedown', () => {
+//     launchFullScreen(document.documentElement);
+// });
+
+// function launchFullScreen(element) {
+//   if (element.requestFullScreen) {
+//     element.requestFullScreen();
+//   } else if (element.mozRequestFullScreen) {
+//     element.mozRequestFullScreen();
+//   } else if (element.webkitRequestFullScreen) {
+//     element.webkitRequestFullScreen();
+//   }
+// }
+
+// Launch fullscreen for browsers that support it!
 
 // document.addEventListener('DOMContentLoaded', () => {
 //     const canvasEl = document.getElementById('game-canvas');
