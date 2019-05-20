@@ -2,8 +2,13 @@ import Game from './game';
 
 window.addEventListener('load', () => {
     let canvasEl = document.getElementById('game-canvas');
-    canvasEl.width = innerWidth;
-    canvasEl.height = innerHeight*0.7;
+    if (innerWidth < 700) {
+        canvasEl.width = innerWidth;
+        canvasEl.height = innerHeight*0.7;
+    } else {
+        canvasEl.width = 900;
+        canvasEl.height = 700;
+    }
     let game = new Game({canvasEl});
     document.getElementById('start').addEventListener('click', () => {
         game.stop();

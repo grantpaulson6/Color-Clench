@@ -16,8 +16,12 @@ class Game {
     }
     
     start({size, speed, frequency, quantity, width, height}) {
-        this.col_x = Math.floor((size - 3) / 2 ) + 3;
-        this.unit_length = Math.floor(this.width/this.col_x);
+        this.col_x = Math.floor((size - 3) / 2 ) + 4;
+        if (this.width === 900) {
+            this.unit_length = 100;
+        } else {
+            this.unit_length = Math.floor(this.width/this.col_x);
+        }
         this.row_y = Math.floor(this.height / this.unit_length);
         this.offsetX = (this.width - this.col_x*this.unit_length)/2 + this.unit_length/2;
         this.offsetY = (this.height - this.row_y*this.unit_length)/2 + this.unit_length/2;
@@ -96,7 +100,6 @@ class Game {
         let currentNode;
         let nodeChildrenProbabilty;
         let i = 0;
-
         while (nodeQueue.length > 0) {
 
             currentNode = nodeQueue[0];
@@ -105,14 +108,14 @@ class Game {
             nextNodePos = this.randomValidNode(validNodes);
 
             // make a station, end that branch
-            if (nodeChildrenProbabilty === 2 && (this.branchCount - this.stationCount > 1) && validNodes.length > 0 && i > 3) {
+            if (nodeChildrenProbabilty === 2 && (this.branchCount - this.stationCount > 1) && validNodes.length > 0 && i > 2) {
                 this.stationCount += 1;
                 this.trackNodes[nextNodePos] = true;
                 nextNode = new TrackTile({ pos: nextNodePos, nextTrackTiles: [], color: this.colors[this.stationCount - 1] });
                 currentNode.addNextTile(nextNode);
             } 
             // split and add a branch, adding two to queue
-            else if (this.branchCount < this.requiredStations && (nodeChildrenProbabilty === 2 || nodeChildrenProbabilty === 1) && validNodes.length > 1 && i > 3) {
+            else if (this.branchCount < this.requiredStations && (nodeChildrenProbabilty === 2 || nodeChildrenProbabilty === 1) && validNodes.length > 1 && i > 2) {
                 this.branchCount += 1;
                 nextNode = new TrackTile({ pos: nextNodePos, nextTrackTiles: [] });
                 this.trackNodes[nextNodePos] = true;
