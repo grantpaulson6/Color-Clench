@@ -15,7 +15,7 @@ class Game {
         this.animateRef = window.requestAnimationFrame(() => this.animate(this.ctx));
     }
     
-    start({size, speed, frequency, quantity, width, height}) {
+    start({size, speed, frequency, quantity}) {
         this.col_x = Math.floor((size - 3) / 2 ) + 4;
         if (this.width === 900) {
             this.unit_length = 100;
@@ -48,6 +48,7 @@ class Game {
     }
 
     setupCanvas(canvasEl) {
+        debugger
         canvasEl.addEventListener('click', e => {
             const x = event.pageX - canvasEl.offsetLeft;
             const y = event.pageY - canvasEl.offsetTop;

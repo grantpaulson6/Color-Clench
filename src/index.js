@@ -5,12 +5,13 @@ window.addEventListener('load', () => {
     if (innerWidth < 700) {
         canvasEl.width = innerWidth;
         canvasEl.height = innerHeight*0.7;
-        let vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty("--vh", `${vh}px`);
     } else {
-        canvasEl.width = 900;
-        canvasEl.height = 700;
+        canvasEl.width = innerWidth - 300;
+        canvasEl.height = innerHeight;
     }
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+
     let game = new Game({canvasEl});
     document.getElementById('start').addEventListener('click', () => {
         game.stop();

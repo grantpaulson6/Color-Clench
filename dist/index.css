@@ -1,19 +1,14 @@
 
-body {
-    display: flex;
-    flex-direction: row;
-    padding: none;
-}
-
 #game-canvas {
   height: 100%;
-  width: 100%;
 }
 
 #menu {
     height: 100vh;
-    width: 30vw;
+    width: 300px;
     padding: 40px;
+    box-sizing: border-box;
+    float: left;
 }
 
 
@@ -27,10 +22,7 @@ body {
 
 #game {
   height: 100vh;
-  width: 70vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
 }
 
 #menu h2 {
@@ -148,23 +140,24 @@ body {
   display: none;
   }
 
-  #settings label {
+  #settings label, #scores, #start {
     display: block;
     width: 40%;
     float: left;
     margin-right: 10%;
   }
 
-  #scores {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    width: 50%;
-    height: 8%;
-    overflow: scroll;
+  #menu th {
+    font-size: 14px;
   }
+  /* #menu tr:first-child {
+    justify-content: flex-start;
+  } */
+}
 
-  #start {
-    width: 40%;
-  }
+td {
+  width: 33%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
