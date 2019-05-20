@@ -16,7 +16,8 @@ class Game {
     }
     
     start({size, speed, frequency, quantity}) {
-        this.col_x = Math.floor((size - 3) / 2 ) + 4;
+        const fullScreenAdjust = this.width >= 700 ? 2 : 0;
+        this.col_x = Math.floor((size - 3) / 2 ) + 4 + fullScreenAdjust;
         if (this.width === 900) {
             this.unit_length = 100;
         } else {
@@ -48,7 +49,6 @@ class Game {
     }
 
     setupCanvas(canvasEl) {
-        debugger
         canvasEl.addEventListener('click', e => {
             const x = event.pageX - canvasEl.offsetLeft;
             const y = event.pageY - canvasEl.offsetTop;
