@@ -196,7 +196,6 @@ class Game {
         } else {
             if (this.allTrainsFinished()) {
                 let score = this.score();
-                console.log(`You got ${score.overall}`);
                 this.scores.push(score);
                 this.populateScores();
             } else {
@@ -258,7 +257,17 @@ class Game {
             newScore.appendChild(entry);
         });
         scores.appendChild(newScore);
+        this.sortList();
     }
+
+    sortList() {
+        const matches = document.getElementById("score-list");
+        Array.from(matches.getElementsByTagName("tr"))
+            .slice(1)
+            .sort((a, b) => Number(b.lastChild.textContent) - Number(a.lastChild.textContent))
+            .forEach(row => matches.appendChild(row));
+    }
+
 }
 
 export default Game;
