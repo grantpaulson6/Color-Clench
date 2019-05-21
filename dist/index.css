@@ -132,7 +132,7 @@ body {
   }
 
   #menu h1 {
-    margin: 15px 0 5px 0;
+    margin: 0 0 5px 0;
   }
 
 
@@ -140,10 +140,14 @@ body {
   display: none;
   }
 
+  /* TODO */
   #settings label, #scores, #start {
     display: block;
     width: 40%;
     float: left;
+  }
+
+  #settings label:nth-child(even), #scores, #start {
     margin-right: 10%;
   }
 
@@ -153,6 +157,7 @@ body {
   /* #menu tr:first-child {
     justify-content: flex-start;
   } */
+
 }
 
 td {
