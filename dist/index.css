@@ -97,6 +97,9 @@ th {
   font-weight: bold;
 }
 
+p#howto {
+  margin-bottom: 15px;
+}
 
 
 @media only screen and (max-device-width: 700px) {
@@ -135,9 +138,8 @@ body {
     margin: 0 0 5px 0;
   }
 
-
-  #menu h2 {
-  display: none;
+  #scores h2 {
+    display: none;
   }
 
   /* TODO */
