@@ -88,9 +88,8 @@ Auto-generation of levels example:
 
 ![](https://media.giphy.com/media/dY0MyiBnzIHQlYE7JJ/giphy.gif)
 
-* The game uses straight forward object oriented programming to structure the game logic, with two main classes being tracks and trains.
+* The game uses straight forward object oriented programming to structure the game logic, with two main classes being tracks and trains (for the moving circles).
 
-* Rendering is achieved by using DOM canvas for painting the objects and the WebAPI’s asynchronous functions such as requestAnimationFrame and 
-setTimeout for real-time animation
+* Rendering is achieved by using DOM canvas for painting the objects and the WebAPI’s asynchronous functions such as requestAnimationFrame and setTimeout for real-time animation
 
-* The app is ideal for mobiel touch-screens as it is Built with responsive CSS using media queries and flex-box
+* The app is ideal for mobile touch-screens as it is Built with responsive CSS using media queries and flex-box
