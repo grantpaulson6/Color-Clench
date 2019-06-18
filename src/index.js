@@ -15,12 +15,12 @@ window.addEventListener('load', () => {
     let game = new Game({canvasEl});
     document.getElementById('start').addEventListener('click', () => {
         game.stop();
-        const size = document.getElementById('difficulty-size').value;
-        let speed = document.getElementById('difficulty-speed').value;
+        const size = document.getElementById('difficultySize').value;
+        let speed = document.getElementById('difficultySpeed').value;
         speed = parseInt(speed) + 2*(80-parseInt(speed)+20);
-        let frequency = document.getElementById('difficulty-frequency').value;
+        let frequency = document.getElementById('difficultyFrequency').value;
         frequency = Number(frequency) + 2 * (2.5 - Number(frequency) + 1);
-        const quantity = document.getElementById('difficulty-quantity').value;
+        const quantity = document.getElementById('difficultyQuantity').value;
         game.start({size, speed, frequency, quantity});
         
     });
