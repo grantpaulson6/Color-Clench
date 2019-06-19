@@ -43,6 +43,7 @@ class Game {
         this.liveScoring[0].innerHTML = 0;
         this.liveScoring[1].innerHTML = 0;
         this.liveScoring[2].innerHTML = quantity;
+        this.liveScoring[3].innerHTML = "Remain"
         this.buildTrack();
         this.addTrain();
     }
@@ -254,6 +255,8 @@ class Game {
 
     allTrainsFinished() {
         let score = this.scoreCalc();
+        this.liveScoring[3].innerHTML = "Score ";
+        this.liveScoring[2].innerHTML = score.overall;
         this.scores.push(score);
         this.populateScores();
     }
