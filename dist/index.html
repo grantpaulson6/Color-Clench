@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" type="text/css" href="./index.css">
     <link rel="stylesheet" type="text/css" href="./reset.css">
-    <!-- <script type="text/javascript">window.icon = "<%= image_url('green_tent.svg') %>"</script> -->
+    <script src="https://kit.fontawesome.com/bdeba6806e.js"></script>
     <link rel="shortcut icon" type="image/png" href="./circle-24.png">
     <script type="application/javascript" src="./main.js" defer></script>
     <title>Color Clench</title>
@@ -16,13 +16,23 @@
         <div id="menu">
             <h1>Color Clench</h1>
             <div id="settings">
-                <h2>How To Play</h2>
+                    <button id="start">Start Clenching!</button>
+                <div id="container1">
+                    <i id="icon" class="fas fa-arrow-down"></i>
+                </div>
+                <h2 id="header1">How To Play</h2>
+                <br>
                 <p id="howto">Gray circles are intersections, touch/click them to toggle 
                     the route. Try to get all moving circles to their matching 
                     colored square. Score equals accuracy times difficulty.
                 </p>
-                <h2>Difficulty Settings<span id="nounderline">: <output id="totalDifficulty">4.14</output> /10</span></h1>
-                <label>Size: <output id="difficultySizeValue" sizeValue>5</output>
+                <div id="container2">
+                    <i id="icon2" class="fas fa-arrow-down"></i>
+                </div>
+                <h2 id="header2">Difficulty Settings<span id="nounderline">: <output id="totalDifficulty">4</output>/10</span></h1>
+                    <br>
+                        <div id="settingshower">
+                    <label>Size: <output id="difficultySizeValue" sizeValue>5</output>
                     <br><span class="info">total number of target squares</span>
                     <div class="slidecontainer">
                         <input type="range" min="3" max="10" value="5" class="slider" 
@@ -54,20 +64,22 @@
                         oninput="difficultyQuantityValue.value=difficultyQuantity.value">
                     </div>
                 </label>
-                <button id="start">Start Clenching!</button>
-
+            </div>
+            <div id="container3">
+                <i id="icon3" class="fas fa-arrow-down"></i>
+            </div>
+            <h2 id="header3">Scores</h1>
                 <div id="scores">
-                    <h2>Scores</h1>
-                        <!-- <ul id="score-list">
-                            <li>Correct Missed Score</li>
-                        </ul> -->
-                        <table id="score-list">
-                            <tr>
-                                <th>Correct</th>
-                                <th>Missed</th>
-                                <th>Score</th>
-                            </tr>
-                        </table>
+                    <!-- <ul id="score-list">
+                        <li>Correct Missed Score</li>
+                    </ul> -->
+                    <table id="score-list">
+                        <tr>
+                            <th>Correct</th>
+                            <th>Missed</th>
+                            <th>Score</th>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>

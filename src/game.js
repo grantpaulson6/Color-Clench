@@ -237,7 +237,6 @@ class Game {
     }
 
     allTrainsFinished() {
-        debugger
         let score = this.scoreCalc();
         this.scores.push(score);
         this.populateScores();

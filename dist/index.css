@@ -30,6 +30,15 @@
   font-weight: 500;
   margin-bottom: 15px;
   text-decoration: underline; 
+  display: inline-block;
+}
+
+#container1, #container2, #container3 {
+  display: inline-block;
+}
+
+#header1:hover, #header2:hover, #header3:hover {
+  cursor: pointer;
 }
 
 .slidecontainer {
@@ -98,11 +107,6 @@ th {
   font-weight: bold;
 }
 
-p#howto {
-  margin-bottom: 15px;
-}
-
-
 @media only screen and (max-device-width: 700px) {
 body {
   flex-direction: column-reverse;
@@ -139,18 +143,14 @@ body {
     margin: 0 0 5px 0;
   }
 
-  #scores h2 {
-    display: none;
-  }
-
   /* TODO */
-  #settings label, #scores, #start {
+  #settings label {
     display: block;
-    width: 40%;
+    width: 45%;
     float: left;
   }
 
-  #settings label:nth-child(even), #scores, #start {
+  #settings label:nth-child(odd) {
     margin-right: 10%;
   }
 
@@ -180,4 +180,29 @@ td {
 #nounderline {
   display: inline-block;
   text-decoration: none;
+}
+
+.fa-arrow-down:hover, .fa-arrow-down.open:hover {
+  cursor: pointer;
+}
+.fa-arrow-down{
+  transform: rotate(0deg);
+  transition: transform 0.5s linear;
+}
+
+.fa-arrow-down.open{
+  transform: rotate(180deg);
+  transition: transform 0.5s linear;
+}
+
+#howto, #settingshower, #scores {
+  display: none;
+}
+
+#howto, #scores {
+  margin-bottom: 15px;
+}
+
+#howto.open, #settingshower.open, #scores.open {
+  display: block;
 }

@@ -45,5 +45,59 @@ window.addEventListener('load', () => {
         difficulty.value = (size + speed + frequency + quantity).toFixed(2);
         });
     });
+    let div1 = document.getElementById('container1');
+    let div2 = document.getElementById('container2');
+    let div3 = document.getElementById('container3');
+    let h1 = document.getElementById('header1');
+    let h2 = document.getElementById('header2');
+    let h3 = document.getElementById('header3');
+    let icon = document.getElementById('icon');
+    let icon2 = document.getElementById('icon2');
+    let icon3 = document.getElementById('icon3');
+    let howto = document.getElementById('howto');
+    let setting = document.getElementById('settingshower');
+    let scores = document.getElementById('scores');
+    
+    let open1 = false;
+    let open2 = false;
+    let open3 = false;
+    [h1,div1].forEach(el=>{
+        el.addEventListener('click', function () {
+            if (open1) {
+                icon.className = 'fa fa-arrow-down';
+                howto.className = "";
+            } else {
+                icon.className = 'fa fa-arrow-down open';
+                howto.className = "open";
+            }
+            open1 = !open1;
+        })
+    });
+    
+    [h2, div2].forEach(el => {
+        el.addEventListener('click', function () {
+            if (open2) {
+                icon2.className = 'fa fa-arrow-down';
+                setting.className = "";
+            } else {
+                icon2.className = 'fa fa-arrow-down open';
+                setting.className = "open";
+            }
+            open2 = !open2;
+        });
+    });
+    
+    [h3, div3].forEach(el => {
+        el.addEventListener('click', function () {
+            if (open3) {
+                icon3.className = 'fa fa-arrow-down';
+                scores.className = "";
+            } else {
+                icon3.className = 'fa fa-arrow-down open';
+                scores.className = "open";
+            }
+            open3 = !open3;
+        });
+    });
 });
 
