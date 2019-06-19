@@ -32,9 +32,9 @@ class Train {
                 this.finished = true;
                 if (this.color === this.endTrackTile.color) {
                     this.scored = true;
-                    this.scoredF();
+                    this.scoredF(true);
                 } else {
-                    this.missed();
+                    this.scoredF(false);
                 }
             } else {
                 this.renderCount = 0;

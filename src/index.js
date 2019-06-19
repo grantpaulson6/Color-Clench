@@ -12,7 +12,12 @@ window.addEventListener('load', () => {
     let vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`);
 
-    let game = new Game({canvasEl});
+    let score = document.getElementById('livescore');
+    let missed = document.getElementById('missedscore');
+    let remaining = document.getElementById('remainingscore');
+    let liveScoring = [score, missed, remaining];
+
+    let game = new Game({canvasEl, liveScoring});
     document.getElementById('start').addEventListener('click', () => {
         game.stop();
         const size = document.getElementById('difficultySize').value;
@@ -22,6 +27,7 @@ window.addEventListener('load', () => {
         frequency = Number(frequency) + 2 * (2.5 - Number(frequency) + 1);
         const quantity = document.getElementById('difficultyQuantity').value;
         const difficulty = document.getElementById('totalDifficulty').innerHTML;
+
         game.start({size, speed, frequency, quantity,difficulty});
         
     });
@@ -71,7 +77,7 @@ window.addEventListener('load', () => {
                 howto.className = "open";
             }
             open1 = !open1;
-        })
+        });
     });
     
     [h2, div2].forEach(el => {

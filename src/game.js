@@ -2,7 +2,8 @@ import Train from './train';
 import TrackTile from './track_tile';
 
 class Game {
-    constructor({canvasEl}) {
+    constructor({canvasEl, liveScoring}) {
+        this.liveScoring = liveScoring;
         this.width = canvasEl.width;
         this.height = canvasEl.height;
         this.lastTrainColor = null;
@@ -39,6 +40,9 @@ class Game {
         this.score = 0;
         this.wrong = 0;
         this.remaining = quantity;
+        this.liveScoring[0].innerHTML = 0;
+        this.liveScoring[1].innerHTML = 0;
+        this.liveScoring[2].innerHTML = quantity;
         this.buildTrack();
         this.addTrain();
     }
@@ -192,24 +196,26 @@ class Game {
         return (!this.trackNodes[pos] && pos[0] > 0 && pos[0] < this.width && pos[1] > 0 && pos[1] < this.height);
     }
 
-    correct() {
-        this.score++;
-        if (this.score + this.wrong >= this.numTrains) this.allTrainsFinished();
-    }
-
-    missed() {
-        this.wrong++;
-        if (this.score + this.wrong >= this.numTrains) this.allTrainsFinished();
+    scored(bool) {
+        if (bool) {
+            this.score++;
+            this.liveScoring[0].innerHTML = this.score;
+            if (this.remaining <= 0) this.allTrainsFinished();
+        } else {
+            this.wrong++;
+            this.liveScoring[1].innerHTML = this.wrong;
+            if (this.remaining <= 0) this.allTrainsFinished();
+        }
     }
 
     addTrain() {
         if (this.trains.length < this.numTrains) {
             this.remaining--;
+            this.liveScoring[2].innerHTML = this.remaining;
             this.trainRef = window.setTimeout(() => {
                 this.trains.push(new Train({ startTrackTile: this.rootNode, 
                     speed: this.speed, color: this.nextTrainColor(), 
-                    scored: this.correct.bind(this),
-                    missed: this.missed.bind(this) }));
+                    scored: this.scored.bind(this) }));
                 this.addTrain();
             }, this.frequency *1000 / 2 + Math.random() * this.frequency * 1000 );
         } 
