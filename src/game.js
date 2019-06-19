@@ -109,6 +109,7 @@ class Game {
         let nextNodePos2;
         let currentNode;
         let nodeChildrenProbabilty;
+        let minBranches = this.numTrains/2+1;
         let i = 0;
         while (nodeQueue.length > 0) {
 
@@ -118,7 +119,7 @@ class Game {
             nextNodePos = this.randomValidNode(validNodes);
 
             // split and add a branch, adding two to queue
-            if (this.branchCount < this.requiredStations && (nodeChildrenProbabilty === 2 || nodeChildrenProbabilty === 3) && validNodes.length > 1 && i > 2) {
+            if (this.branchCount < this.requiredStations && (nodeChildrenProbabilty === 1 || nodeChildrenProbabilty === 2) && validNodes.length > 1 && i > 2) {
                 this.branchCount += 1;
                 nextNode = new TrackTile({ pos: nextNodePos, nextTrackTiles: [] });
                 this.trackNodes[nextNodePos] = true;
@@ -135,7 +136,9 @@ class Game {
             }
             
             // make a station, end that branch
-            else if ((nodeChildrenProbabilty === 1 || nodeChildrenProbabilty === 2) && (this.branchCount - this.stationCount > 1) && validNodes.length > 0 && i > 2) {
+            else if ((nodeChildrenProbabilty === 0 || nodeChildrenProbabilty === 1) &&
+             (this.branchCount - this.stationCount > 1) && validNodes.length > 0 &&
+              i > 2 && this.branchCount > minBranches) {
                 this.stationCount += 1;
                 this.trackNodes[nextNodePos] = true;
                 nextNode = new TrackTile({ pos: nextNodePos, nextTrackTiles: [], color: this.colors[this.stationCount - 1] });
