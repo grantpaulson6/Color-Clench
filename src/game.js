@@ -2,7 +2,8 @@ import Train from './train';
 import TrackTile from './track_tile';
 
 class Game {
-    constructor({canvasEl}) {
+    constructor({canvasEl, liveScoring}) {
+        this.liveScoring = liveScoring;
         this.width = canvasEl.width;
         this.height = canvasEl.height;
         this.lastTrainColor = null;
@@ -15,7 +16,7 @@ class Game {
         this.animateRef = window.requestAnimationFrame(() => this.animate(this.ctx));
     }
     
-    start({size, speed, frequency, quantity}) {
+    start({size, speed, frequency, quantity, difficulty}) {
         const fullScreenAdjust = this.width >= 700 ? 2 : 0;
         this.col_x = Math.floor((size - 3) / 2 ) + 4 + fullScreenAdjust;
         if (this.width === 900) {
@@ -28,6 +29,7 @@ class Game {
         this.offsetY = (this.height - this.row_y*this.unit_length)/2 + this.unit_length/2;
         this.branchCount = 0;
         this.stationCount = 0;
+        this.difficulty = difficulty;
         this.requiredStations = size;
         this.speed = speed;
         this.frequency = frequency;
@@ -35,6 +37,13 @@ class Game {
         this.trackNodes = {};
         this.intersections = [];
         this.trains = [];
+        this.score = 0;
+        this.wrong = 0;
+        this.remaining = quantity;
+        this.liveScoring[0].innerHTML = 0;
+        this.liveScoring[1].innerHTML = 0;
+        this.liveScoring[2].innerHTML = quantity;
+        this.liveScoring[3].innerHTML = "Remain"
         this.buildTrack();
         this.addTrain();
     }
@@ -100,37 +109,41 @@ class Game {
         let nextNodePos2;
         let currentNode;
         let nodeChildrenProbabilty;
+        let minBranches = this.numTrains/2+1;
         let i = 0;
         while (nodeQueue.length > 0) {
 
             currentNode = nodeQueue[0];
-            nodeChildrenProbabilty = Math.floor(Math.random() * 3);
+            nodeChildrenProbabilty = Math.floor(Math.random() * 4);
             validNodes = this.allValidNodes(currentNode.pos);
             nextNodePos = this.randomValidNode(validNodes);
 
-            // make a station, end that branch
-            if (nodeChildrenProbabilty === 2 && (this.branchCount - this.stationCount > 1) && validNodes.length > 0 && i > 2) {
-                this.stationCount += 1;
-                this.trackNodes[nextNodePos] = true;
-                nextNode = new TrackTile({ pos: nextNodePos, nextTrackTiles: [], color: this.colors[this.stationCount - 1] });
-                currentNode.addNextTile(nextNode);
-            } 
             // split and add a branch, adding two to queue
-            else if (this.branchCount < this.requiredStations && (nodeChildrenProbabilty === 2 || nodeChildrenProbabilty === 1) && validNodes.length > 1 && i > 2) {
+            if (this.branchCount < this.requiredStations && (nodeChildrenProbabilty === 1 || nodeChildrenProbabilty === 2) && validNodes.length > 1 && i > 2) {
                 this.branchCount += 1;
                 nextNode = new TrackTile({ pos: nextNodePos, nextTrackTiles: [] });
                 this.trackNodes[nextNodePos] = true;
-
+                
                 nextNodePos2 = this.randomValidNode(this.allValidNodes(currentNode.pos));
                 this.trackNodes[nextNodePos2] = true;
                 nextNode2 = new TrackTile({ pos: nextNodePos2, nextTrackTiles: [] });
-
+                
                 currentNode.addNextTile(nextNode);
                 currentNode.addNextTile(nextNode2);
                 this.intersections.push(currentNode);
                 nodeQueue.push(nextNode);
                 nodeQueue.push(nextNode2);
             }
+            
+            // make a station, end that branch
+            else if ((nodeChildrenProbabilty === 0 || nodeChildrenProbabilty === 1) &&
+             (this.branchCount - this.stationCount > 1) && validNodes.length > 0 &&
+              i > 2 && this.branchCount > minBranches) {
+                this.stationCount += 1;
+                this.trackNodes[nextNodePos] = true;
+                nextNode = new TrackTile({ pos: nextNodePos, nextTrackTiles: [], color: this.colors[this.stationCount - 1] });
+                currentNode.addNextTile(nextNode);
+            } 
 
             else {
                 // if more than 1 remaing station, just add one child, aka just plain track, add one to queue
@@ -187,23 +200,50 @@ class Game {
         return (!this.trackNodes[pos] && pos[0] > 0 && pos[0] < this.width && pos[1] > 0 && pos[1] < this.height);
     }
 
+    scored(bool) {
+        if (bool) {
+            this.score++;
+            this.liveScoring[0].innerHTML = this.score;
+            this.blink(this.liveScoring[0]);
+            if (this.remaining <= 0 && this.trains[this.trains.length - 1].finished) this.allTrainsFinished();
+        } else {
+            this.wrong++;
+            this.liveScoring[1].innerHTML = this.wrong;
+            this.blink(this.liveScoring[1]);
+            if (this.remaining <= 0 && this.trains[this.trains.length - 1].finished) this.allTrainsFinished();
+        }
+    }
+
+    blink(el) {
+        el.className = "blink";
+        setTimeout(() => {
+            el.className = "";
+        }, 500);
+    }
+
     addTrain() {
         if (this.trains.length < this.numTrains) {
             this.trainRef = window.setTimeout(() => {
-                this.trains.push(new Train({ startTrackTile: this.rootNode, speed: this.speed, color: this.nextTrainColor() }));
+                this.remaining--;
+                this.liveScoring[2].innerHTML = this.remaining;
+                this.blink(this.liveScoring[2]);
+                this.trains.push(new Train({ startTrackTile: this.rootNode, 
+                    speed: this.speed, color: this.nextTrainColor(), 
+                    scored: this.scored.bind(this) }));
                 this.addTrain();
             }, this.frequency *1000 / 2 + Math.random() * this.frequency * 1000 );
-        } else {
-            if (this.allTrainsFinished()) {
-                let score = this.score();
-                this.scores.push(score);
-                this.populateScores();
-            } else {
-                this.trainRef = window.setTimeout(() => {
-                    this.addTrain();
-                }, 1000);
-            }
-        }
+        } 
+        // else {
+        //     if (this.allTrainsFinished()) {
+        //         let score = this.scoreCalc();
+        //         this.scores.push(score);
+        //         this.populateScores();
+        //     } else {
+        //         this.trainRef = window.setTimeout(() => {
+        //             this.addTrain();
+        //         }, 1000);
+        //     }
+        // }
     }
 
     // no back to back repeating colors
@@ -217,35 +257,34 @@ class Game {
     }
 
     allTrainsFinished() {
-        for (let train of this.trains) {
-            if (!train.finished) {
-                return false;
-            }
-        }
-        return true;
+        let score = this.scoreCalc();
+        this.liveScoring[3].innerHTML = "Score ";
+        this.liveScoring[2].innerHTML = score.overall;
+        this.scores.push(score);
+        this.populateScores();
     }
 
-    score() {
-        let score = 0;
-        this.trains.forEach( train => {
-            if (train.scored) {
-                score += 1;
-            }
-        });
-        const difficulty = this.difficulty();
-        return {correct: score, 
-            missed: (this.numTrains - score), 
-            overall: +((difficulty * score / this.numTrains).toFixed(2))};
+    scoreCalc() {
+        // let score = 0;
+        // this.trains.forEach( train => {
+        //     if (train.scored) {
+        //         score += 1;
+        //     }
+        // });
+        // const difficulty = this.difficulty();
+        return {correct: this.score, 
+            missed: this.wrong, 
+            overall: +((this.difficulty * this.score / this.numTrains).toFixed(2))};
     }
 
-    difficulty() {
-        const size = (this.requiredStations - 3 ) * 3 / 7;
-        const speed = (180 - this.speed) * 2.5 / 160;
-        const frequency = (6 -this.frequency) * 2.5 / 5;
-        const quantity = (this.numTrains - 5)* 2 / 45;
-        const difficulty = size + speed + frequency + quantity;
-        return difficulty;
-    }
+    // difficulty() {
+    //     const size = (this.requiredStations - 3 ) * 3 / 7;
+    //     const speed = (180 - this.speed) * 2.5 / 160;
+    //     const frequency = (6 -this.frequency) * 2.5 / 5;
+    //     const quantity = (this.numTrains - 5)* 2 / 45;
+    //     const difficulty = size + speed + frequency + quantity;
+    //     return difficulty;
+    // }
 
     populateScores() {
         const scores = document.getElementById('score-list');
