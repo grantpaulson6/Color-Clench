@@ -15,7 +15,7 @@ class Game {
         this.animateRef = window.requestAnimationFrame(() => this.animate(this.ctx));
     }
     
-    start({size, speed, frequency, quantity}) {
+    start({size, speed, frequency, quantity, difficulty}) {
         const fullScreenAdjust = this.width >= 700 ? 2 : 0;
         this.col_x = Math.floor((size - 3) / 2 ) + 4 + fullScreenAdjust;
         if (this.width === 900) {
@@ -28,6 +28,7 @@ class Game {
         this.offsetY = (this.height - this.row_y*this.unit_length)/2 + this.unit_length/2;
         this.branchCount = 0;
         this.stationCount = 0;
+        this.difficulty = difficulty;
         this.requiredStations = size;
         this.speed = speed;
         this.frequency = frequency;
@@ -232,20 +233,20 @@ class Game {
                 score += 1;
             }
         });
-        const difficulty = this.difficulty();
+        // const difficulty = this.difficulty();
         return {correct: score, 
             missed: (this.numTrains - score), 
-            overall: +((difficulty * score / this.numTrains).toFixed(2))};
+            overall: +((this.difficulty * score / this.numTrains).toFixed(2))};
     }
 
-    difficulty() {
-        const size = (this.requiredStations - 3 ) * 3 / 7;
-        const speed = (180 - this.speed) * 2.5 / 160;
-        const frequency = (6 -this.frequency) * 2.5 / 5;
-        const quantity = (this.numTrains - 5)* 2 / 45;
-        const difficulty = size + speed + frequency + quantity;
-        return difficulty;
-    }
+    // difficulty() {
+    //     const size = (this.requiredStations - 3 ) * 3 / 7;
+    //     const speed = (180 - this.speed) * 2.5 / 160;
+    //     const frequency = (6 -this.frequency) * 2.5 / 5;
+    //     const quantity = (this.numTrains - 5)* 2 / 45;
+    //     const difficulty = size + speed + frequency + quantity;
+    //     return difficulty;
+    // }
 
     populateScores() {
         const scores = document.getElementById('score-list');

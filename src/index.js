@@ -21,8 +21,29 @@ window.addEventListener('load', () => {
         let frequency = document.getElementById('difficultyFrequency').value;
         frequency = Number(frequency) + 2 * (2.5 - Number(frequency) + 1);
         const quantity = document.getElementById('difficultyQuantity').value;
-        game.start({size, speed, frequency, quantity});
+        const difficulty = document.getElementById('totalDifficulty').innerHTML;
+        game.start({size, speed, frequency, quantity,difficulty});
         
+    });
+
+    let sliders = document.getElementsByClassName('slider');
+
+    Array.from(sliders).forEach( el => {
+
+        el.addEventListener('change',() => {
+    // document.getElementById('difficultySize').oninput = () => {
+        // e.preventDefault();
+        let size = document.getElementById('difficultySize').value;
+        size = (size-2)*3/8;
+        let speed = document.getElementById('difficultySpeed').value;
+        speed = (speed-10)*(2.5)/170;
+        let frequency = document.getElementById('difficultyFrequency').value;
+        frequency = (frequency)*2.5/6;
+        let quantity = document.getElementById('difficultyQuantity').value;
+        quantity = (quantity-4)*2/46;
+        let difficulty = document.getElementById('totalDifficulty');
+        difficulty.value = (size + speed + frequency + quantity).toFixed(2);
+        });
     });
 });
 

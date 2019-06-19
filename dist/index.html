@@ -19,39 +19,39 @@
                 <h2>How To Play</h2>
                 <p id="howto">Gray circles are intersections, touch/click them to toggle 
                     the route. Try to get all moving circles to their matching 
-                    colored square. Score increases with accuracy and difficulty.
+                    colored square. Score equals accuracy times difficulty.
                 </p>
-                <h2>Difficulty Settings</h1>
-                <label>Size
+                <h2>Difficulty Settings:<span> <output id="totalDifficulty">1</output> /10</span></h1>
+                <label>Size: <output id="difficultySizeValue" sizeValue>5</output>
+                    <br><span class="info">total number of target squares</span>
                     <div class="slidecontainer">
                         <input type="range" min="3" max="10" value="5" class="slider" 
                         id="difficultySize" 
                         oninput="difficultySizeValue.value=difficultySize.value">
-                        <output id="difficultySizeValue">5</output>
                     </div>
                 </label>
-                <label>Speed
+                <label>Speed: <output id="difficultySpeedValue">9</output>
+                    <br> <span class="info">how fast circles move</span>
                     <div class="slidecontainer">
                         <input type="range" min="20" max="180" value="90" step=10 
                         class="slider" id="difficultySpeed"
-                        oninput="difficultySpeedValue.value=difficultySpeed.value">
-                        <output id="difficultySpeedValue">90</output>
+                        oninput="difficultySpeedValue.value=difficultySpeed.value/10">
                     </div>
                 </label>
-                <label>Frequency
+                <label>Frequency: <output id="difficultyFrequencyValue">11</output>
+                    <br> <span class="info">how often new circles spawn</span>
                     <div class="slidecontainer">
                         <input type="range" min="1" max="6" value="2.75" step=.25 
                         class="slider" id="difficultyFrequency"
-                        oninput="difficultyFrequencyValue.value=difficultyFrequency.value">
-                        <output id="difficultyFrequencyValue">2.75</output>
+                        oninput="difficultyFrequencyValue.value=difficultyFrequency.value*4">
                     </div>
                 </label>
-                <label>Quantity
+                <label>Quantity: <output id="difficultyQuantityValue">20</output>
+                    <br> <span class="info">total number of circles per round</span>
                     <div class="slidecontainer">
                         <input type="range" min="5" max="50" value="20" step=5 
                         class="slider" id="difficultyQuantity"
                         oninput="difficultyQuantityValue.value=difficultyQuantity.value">
-                        <output id="difficultyQuantityValue">20</output>
                     </div>
                 </label>
                 <button id="start">Start Clenching!</button>
