@@ -15,7 +15,7 @@
 #menu h1 {
   font-size: 28px;
   margin-bottom: 15px;
-  margin-top: 40px;
+  /* margin-top: 40px; */
   font-weight: 600;
 }
 
@@ -161,6 +161,9 @@ body {
     justify-content: flex-start;
   } */
 
+  #settings .info {
+    font-size: 10px
+  }
 }
 
 td {
@@ -172,4 +175,9 @@ td {
 
 .info {
   font-size: 12px;
+}
+
+#nounderline {
+  display: inline-block;
+  text-decoration: none;
 }

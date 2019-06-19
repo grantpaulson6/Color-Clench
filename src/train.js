@@ -1,11 +1,13 @@
 class Train {
-    constructor({ startTrackTile, color, speed }) {
+    constructor({ startTrackTile, color, speed, scored, missed }) {
         this.startTrackTile = startTrackTile;
         this.endTrackTile = startTrackTile.nextTrackTile;
         this.color = color;
         this.pos = [startTrackTile.pos[0], startTrackTile.pos[1]];
         this.renderCount = 0;
         this.renderInterval = speed;
+        this.scoredF = scored;
+        this.missed = missed;
     }
 
 
@@ -30,6 +32,9 @@ class Train {
                 this.finished = true;
                 if (this.color === this.endTrackTile.color) {
                     this.scored = true;
+                    this.scoredF();
+                } else {
+                    this.missed();
                 }
             } else {
                 this.renderCount = 0;

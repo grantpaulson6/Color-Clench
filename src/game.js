@@ -36,6 +36,9 @@ class Game {
         this.trackNodes = {};
         this.intersections = [];
         this.trains = [];
+        this.score = 0;
+        this.wrong = 0;
+        this.remaining = quantity;
         this.buildTrack();
         this.addTrain();
     }
@@ -105,33 +108,34 @@ class Game {
         while (nodeQueue.length > 0) {
 
             currentNode = nodeQueue[0];
-            nodeChildrenProbabilty = Math.floor(Math.random() * 3);
+            nodeChildrenProbabilty = Math.floor(Math.random() * 4);
             validNodes = this.allValidNodes(currentNode.pos);
             nextNodePos = this.randomValidNode(validNodes);
 
-            // make a station, end that branch
-            if (nodeChildrenProbabilty === 2 && (this.branchCount - this.stationCount > 1) && validNodes.length > 0 && i > 2) {
-                this.stationCount += 1;
-                this.trackNodes[nextNodePos] = true;
-                nextNode = new TrackTile({ pos: nextNodePos, nextTrackTiles: [], color: this.colors[this.stationCount - 1] });
-                currentNode.addNextTile(nextNode);
-            } 
             // split and add a branch, adding two to queue
-            else if (this.branchCount < this.requiredStations && (nodeChildrenProbabilty === 2 || nodeChildrenProbabilty === 1) && validNodes.length > 1 && i > 2) {
+            if (this.branchCount < this.requiredStations && (nodeChildrenProbabilty === 2 || nodeChildrenProbabilty === 3) && validNodes.length > 1 && i > 2) {
                 this.branchCount += 1;
                 nextNode = new TrackTile({ pos: nextNodePos, nextTrackTiles: [] });
                 this.trackNodes[nextNodePos] = true;
-
+                
                 nextNodePos2 = this.randomValidNode(this.allValidNodes(currentNode.pos));
                 this.trackNodes[nextNodePos2] = true;
                 nextNode2 = new TrackTile({ pos: nextNodePos2, nextTrackTiles: [] });
-
+                
                 currentNode.addNextTile(nextNode);
                 currentNode.addNextTile(nextNode2);
                 this.intersections.push(currentNode);
                 nodeQueue.push(nextNode);
                 nodeQueue.push(nextNode2);
             }
+            
+            // make a station, end that branch
+            else if ((nodeChildrenProbabilty === 1 || nodeChildrenProbabilty === 2) && (this.branchCount - this.stationCount > 1) && validNodes.length > 0 && i > 2) {
+                this.stationCount += 1;
+                this.trackNodes[nextNodePos] = true;
+                nextNode = new TrackTile({ pos: nextNodePos, nextTrackTiles: [], color: this.colors[this.stationCount - 1] });
+                currentNode.addNextTile(nextNode);
+            } 
 
             else {
                 // if more than 1 remaing station, just add one child, aka just plain track, add one to queue
@@ -188,23 +192,38 @@ class Game {
         return (!this.trackNodes[pos] && pos[0] > 0 && pos[0] < this.width && pos[1] > 0 && pos[1] < this.height);
     }
 
+    correct() {
+        this.score++;
+        if (this.score + this.wrong >= this.numTrains) this.allTrainsFinished();
+    }
+
+    missed() {
+        this.wrong++;
+        if (this.score + this.wrong >= this.numTrains) this.allTrainsFinished();
+    }
+
     addTrain() {
         if (this.trains.length < this.numTrains) {
+            this.remaining--;
             this.trainRef = window.setTimeout(() => {
-                this.trains.push(new Train({ startTrackTile: this.rootNode, speed: this.speed, color: this.nextTrainColor() }));
+                this.trains.push(new Train({ startTrackTile: this.rootNode, 
+                    speed: this.speed, color: this.nextTrainColor(), 
+                    scored: this.correct.bind(this),
+                    missed: this.missed.bind(this) }));
                 this.addTrain();
             }, this.frequency *1000 / 2 + Math.random() * this.frequency * 1000 );
-        } else {
-            if (this.allTrainsFinished()) {
-                let score = this.score();
-                this.scores.push(score);
-                this.populateScores();
-            } else {
-                this.trainRef = window.setTimeout(() => {
-                    this.addTrain();
-                }, 1000);
-            }
-        }
+        } 
+        // else {
+        //     if (this.allTrainsFinished()) {
+        //         let score = this.scoreCalc();
+        //         this.scores.push(score);
+        //         this.populateScores();
+        //     } else {
+        //         this.trainRef = window.setTimeout(() => {
+        //             this.addTrain();
+        //         }, 1000);
+        //     }
+        // }
     }
 
     // no back to back repeating colors
@@ -218,25 +237,23 @@ class Game {
     }
 
     allTrainsFinished() {
-        for (let train of this.trains) {
-            if (!train.finished) {
-                return false;
-            }
-        }
-        return true;
+        debugger
+        let score = this.scoreCalc();
+        this.scores.push(score);
+        this.populateScores();
     }
 
-    score() {
-        let score = 0;
-        this.trains.forEach( train => {
-            if (train.scored) {
-                score += 1;
-            }
-        });
+    scoreCalc() {
+        // let score = 0;
+        // this.trains.forEach( train => {
+        //     if (train.scored) {
+        //         score += 1;
+        //     }
+        // });
         // const difficulty = this.difficulty();
-        return {correct: score, 
-            missed: (this.numTrains - score), 
-            overall: +((this.difficulty * score / this.numTrains).toFixed(2))};
+        return {correct: this.score, 
+            missed: this.wrong, 
+            overall: +((this.difficulty * this.score / this.numTrains).toFixed(2))};
     }
 
     // difficulty() {
