@@ -201,12 +201,12 @@ class Game {
             this.score++;
             this.liveScoring[0].innerHTML = this.score;
             this.blink(this.liveScoring[0]);
-            if (this.remaining <= 0) this.allTrainsFinished();
+            if (this.remaining <= 0 && this.trains[this.trains.length - 1].finished) this.allTrainsFinished();
         } else {
             this.wrong++;
             this.liveScoring[1].innerHTML = this.wrong;
             this.blink(this.liveScoring[1]);
-            if (this.remaining <= 0) this.allTrainsFinished();
+            if (this.remaining <= 0 && this.trains[this.trains.length - 1].finished) this.allTrainsFinished();
         }
     }
 

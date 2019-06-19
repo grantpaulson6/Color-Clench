@@ -16,9 +16,12 @@ window.addEventListener('load', () => {
     let missed = document.getElementById('missedscore');
     let remaining = document.getElementById('remainingscore');
     let liveScoring = [score, missed, remaining];
+    let scoreTable = document.getElementById('current-score');
 
     let game = new Game({canvasEl, liveScoring});
+
     document.getElementById('start').addEventListener('click', () => {
+        scoreTable.className = "playing";
         game.stop();
         const size = document.getElementById('difficultySize').value;
         let speed = document.getElementById('difficultySpeed').value;
