@@ -206,3 +206,28 @@ td {
 #howto.open, #settingshower.open, #scores.open {
   display: block;
 }
+
+
+#livescore, #missedscore, #remainingscore {
+  display: inline-block;
+  width: 20px;
+  transition: background-color 0.5s linear;
+  background: none;
+  border-radius: 5px;
+}
+
+#livescore.blink, #missedscore.blink, #remainingscore.blink {
+  transition: background-color 0.5s linear;
+}
+
+#livescore.blink {
+  background: #4CAF50;
+}
+
+#missedscore.blink {
+  background: red;
+}
+
+#remainingscore.blink {
+  background: yellow;
+}

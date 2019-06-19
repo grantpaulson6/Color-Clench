@@ -200,19 +200,29 @@ class Game {
         if (bool) {
             this.score++;
             this.liveScoring[0].innerHTML = this.score;
+            this.blink(this.liveScoring[0]);
             if (this.remaining <= 0) this.allTrainsFinished();
         } else {
             this.wrong++;
             this.liveScoring[1].innerHTML = this.wrong;
+            this.blink(this.liveScoring[1]);
             if (this.remaining <= 0) this.allTrainsFinished();
         }
     }
 
+    blink(el) {
+        el.className = "blink";
+        setTimeout(() => {
+            el.className = "";
+        }, 500);
+    }
+
     addTrain() {
         if (this.trains.length < this.numTrains) {
-            this.remaining--;
-            this.liveScoring[2].innerHTML = this.remaining;
             this.trainRef = window.setTimeout(() => {
+                this.remaining--;
+                this.liveScoring[2].innerHTML = this.remaining;
+                this.blink(this.liveScoring[2]);
                 this.trains.push(new Train({ startTrackTile: this.rootNode, 
                     speed: this.speed, color: this.nextTrainColor(), 
                     scored: this.scored.bind(this) }));
