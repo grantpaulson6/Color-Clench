@@ -114,6 +114,7 @@ window.addEventListener('load', () => {
             open3 = !open3;
         });
     });
+
     [h4, div4].forEach(el => {
         el.addEventListener('click', function () {
             if (open4) {

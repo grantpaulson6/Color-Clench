@@ -37,7 +37,7 @@
   display: inline-block;
 }
 
-#header1:hover, #header2:hover, #header3:hover, #header4:hover {
+#start, #header1:hover, #header2:hover, #header3:hover, #header4:hover {
   cursor: pointer;
 }
 
@@ -129,7 +129,10 @@ body {
   #settings {
     overflow: scroll;
     height: calc(var(--vh, 1vh) * 30 - 78px);
-    padding-bottom: 10px;
+  }
+
+  #filler {
+    height: 25px;
   }
 
   #game {
@@ -254,4 +257,22 @@ td {
 
 #current-score.playing {
   display: table;
+}
+
+#creator li a {
+  text-decoration: none;
+  color: rgba(0, 0, 0);
+  font: inherit; 
+  margin-left: 10px;
+  margin-bottom: 15px;
+}
+
+#creator li {
+  margin-left: 15px;
+  margin-bottom: 5px;
+}
+
+#creator li:hover {
+  text-decoration: underline;
+  cursor: pointer;
 }
