@@ -58,19 +58,24 @@ window.addEventListener('load', () => {
     let div1 = document.getElementById('container1');
     let div2 = document.getElementById('container2');
     let div3 = document.getElementById('container3');
+    let div4 = document.getElementById('container4');
     let h1 = document.getElementById('header1');
     let h2 = document.getElementById('header2');
     let h3 = document.getElementById('header3');
+    let h4 = document.getElementById('header4');
     let icon = document.getElementById('icon');
     let icon2 = document.getElementById('icon2');
     let icon3 = document.getElementById('icon3');
+    let icon4 = document.getElementById('icon4');
     let howto = document.getElementById('howto');
     let setting = document.getElementById('settingshower');
     let scores = document.getElementById('scores');
+    let creator = document.getElementById('creator');
     
     let open1 = false;
     let open2 = false;
     let open3 = false;
+    let open4 = false;
     [h1,div1].forEach(el=>{
         el.addEventListener('click', function () {
             if (open1) {
@@ -107,6 +112,18 @@ window.addEventListener('load', () => {
                 scores.className = "open";
             }
             open3 = !open3;
+        });
+    });
+    [h4, div4].forEach(el => {
+        el.addEventListener('click', function () {
+            if (open4) {
+                icon4.className = 'fa fa-arrow-down';
+                creator.className = "";
+            } else {
+                icon4.className = 'fa fa-arrow-down open';
+                creator.className = "open";
+            }
+            open4 = !open4;
         });
     });
 });

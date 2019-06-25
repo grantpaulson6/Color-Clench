@@ -33,11 +33,11 @@
   display: inline-block;
 }
 
-#container1, #container2, #container3 {
+#container1, #container2, #container3, #container4 {
   display: inline-block;
 }
 
-#header1:hover, #header2:hover, #header3:hover {
+#header1:hover, #header2:hover, #header3:hover, #header4:hover {
   cursor: pointer;
 }
 
@@ -207,7 +207,7 @@ td {
   transition: transform 0.5s linear;
 }
 
-#howto, #settingshower, #scores {
+#howto, #settingshower, #scores, #creator {
   display: none;
 }
 
@@ -215,7 +215,7 @@ td {
   margin-bottom: 15px;
 }
 
-#howto.open, #settingshower.open, #scores.open {
+#howto.open, #settingshower.open, #scores.open, #creator.open {
   display: block;
 }
 
