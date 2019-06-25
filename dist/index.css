@@ -1,11 +1,12 @@
 
 #game-canvas {
   height: 100%;
+  width: calc(100vw - 310px);
 }
 
 #menu {
     height: 100vh;
-    width: 300px;
+    width: 310px;
     padding: 40px;
     box-sizing: border-box;
     float: left;
@@ -72,7 +73,7 @@
 
 
 /* Mouse-over effects */
-.slider:hover, #settings button:hover {
+.slider:hover, #menu button:hover {
   opacity: 1; /* Fully shown on mouse-over */
 }
 
@@ -107,6 +108,10 @@ th {
   font-weight: bold;
 }
 
+#filler {
+  height: 25px;
+}
+
 @media only screen and (max-device-width: 700px) {
 body {
   flex-direction: column-reverse;
@@ -126,13 +131,13 @@ body {
     flex-wrap: wrap; */
   }
 
+  #menu button {
+    opacity: 1;
+  }
+
   #settings {
     overflow: scroll;
     height: calc(var(--vh, 1vh) * 30 - 78px);
-  }
-
-  #filler {
-    height: 25px;
   }
 
   #game {
@@ -146,6 +151,10 @@ body {
     top: 0;
     left: 0;
   }
+
+  #game-canvas {
+  width: 100%;
+}
 
   #menu h1 {
     margin: 0 10px 7px 0;
@@ -164,7 +173,7 @@ body {
   }
 
   #menu th {
-    font-size: 14px;
+    font-size: 13px;
   }
   /* #menu tr:first-child {
     justify-content: flex-start;
